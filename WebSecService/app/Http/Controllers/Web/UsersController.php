@@ -146,7 +146,7 @@ class UsersController extends Controller {
 
         if(!auth()->user()->hasPermissionTo('delete_users')) abort(401);
 
-        //$user->delete();
+        $user->delete();
 
         return redirect()->route('users');
     }
@@ -185,4 +185,24 @@ class UsersController extends Controller {
 
         return redirect(route('profile', ['user'=>$user->id]));
     }
+
+   public function addCredit(Request $request, User $user) {
+    // تحقق من صلاحية المستخدم
+    if (!auth()->user()->hasPermissionTo('add_credit')) {
+        abort(403, 'You do not have permission to add credit.');
+    }
+
+    // تحقق من وجود الكريدت في الحقل
+    $credit = $request->input('credit');
+
+    // إضافة الكريدت للمستخدم
+    $user->credit += $credit;
+    $user->save();
+
+    // إعادة التوجيه إلى صفحة المستخدم بعد إضافة الكريدت
+    return redirect()->route('users', ['user' => $user->id]);
+}
+
+    
+    
 } 

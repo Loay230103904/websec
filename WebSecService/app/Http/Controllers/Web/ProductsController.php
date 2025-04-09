@@ -7,6 +7,9 @@ use DB;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Purchase;
+
+
 
 class ProductsController extends Controller {
 
@@ -72,4 +75,37 @@ class ProductsController extends Controller {
 
 		return redirect()->route('products_list');
 	}
+
+
+
+	public function purchase(Request $request, $productId)
+{
+    $product = Product::findOrFail($productId);
+    
+    $totalPrice = $product->price;
+
+    // تأكد أن المستخدم لديه رصيد كافٍ قبل إتمام عملية الشراء
+    $user = auth()->user();
+
+    if ($user->credit < $totalPrice) {
+        // عرض رسالة تفيد بعدم كفاية الرصيد
+        return redirect()->back()->with('error', 'You do not have enough credit to make this purchase.');
+    }
+
+    // خصم الرصيد من المستخدم
+    $user->credit -= $totalPrice;
+    $user->save();
+
+    // سجل عملية الشراء في جدول purchases
+    Purchase::create([
+        'user_id' => $user->id,
+        'product_id' => $productId,
+        'total_price' => $totalPrice,
+    ]);
+
+    // عرض رسالة تفيد بنجاح عملية الشراء
+    return redirect()->route('products_list')->with('success', 'Purchase successful.');
+}
+
+
 } 

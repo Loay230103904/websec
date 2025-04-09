@@ -3,6 +3,7 @@
 @section('content')
 <div class="row">
     <div class="m-4 col-sm-6">
+        <!-- بيانات المستخدم -->
         <table class="table table-striped">
             <tr>
                 <th>Name</th><td>{{$user->name}}</td>
@@ -28,16 +29,15 @@
             </tr>
         </table>
 
+        <!-- أزرار التعديل وتغيير كلمة المرور -->
         <div class="row">
-            <div class="col col-6">
-            </div>
+            <div class="col col-6"></div>
             @if(auth()->user()->hasPermissionTo('admin_users')||auth()->id()==$user->id)
             <div class="col col-4">
                 <a class="btn btn-primary" href='{{route('edit_password', $user->id)}}'>Change Password</a>
             </div>
             @else
-            <div class="col col-4">
-            </div>
+            <div class="col col-4"></div>
             @endif
             @if(auth()->user()->hasPermissionTo('edit_users')||auth()->id()==$user->id)
             <div class="col col-2">
@@ -45,6 +45,27 @@
             </div>
             @endif
         </div>
+
+        <!-- عرض المشتريات -->
+        <h4 class="mt-4">Purchases</h4>
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($user->purchases as $purchase)
+                    <tr>
+                        <td>{{ $purchase->product->name }}</td>
+                        <td>{{ $purchase->total_price }}</td>
+                        <td>{{ $purchase->created_at->format('d-m-Y') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 @endsection

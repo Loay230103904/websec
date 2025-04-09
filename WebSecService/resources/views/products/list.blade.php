@@ -1,6 +1,27 @@
 @extends('layouts.master')
 @section('title', 'Test Page')
 @section('content')
+
+<!-- عرض رصيد العميل -->
+<div class="row mt-2">
+    <div class="col col-12">
+        <h4>Your Credit: <span class="badge bg-primary">{{ auth()->user()->credit }}</span></h4>
+    </div>
+</div>
+
+<!-- رسائل النجاح أو الفشل -->
+@if(session('success'))
+    <div class="alert alert-success mt-2">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger mt-2">
+        {{ session('error') }}
+    </div>
+@endif
+
 <div class="row mt-2">
     <div class="col col-10">
         <h1>Products</h1>
@@ -11,16 +32,18 @@
         @endcan
     </div>
 </div>
+
+<!-- فلترة المنتجات -->
 <form>
     <div class="row">
         <div class="col col-sm-2">
-            <input name="keywords" type="text"  class="form-control" placeholder="Search Keywords" value="{{ request()->keywords }}" />
+            <input name="keywords" type="text" class="form-control" placeholder="Search Keywords" value="{{ request()->keywords }}" />
         </div>
         <div class="col col-sm-2">
-            <input name="min_price" type="numeric"  class="form-control" placeholder="Min Price" value="{{ request()->min_price }}"/>
+            <input name="min_price" type="numeric" class="form-control" placeholder="Min Price" value="{{ request()->min_price }}"/>
         </div>
         <div class="col col-sm-2">
-            <input name="max_price" type="numeric"  class="form-control" placeholder="Max Price" value="{{ request()->max_price }}"/>
+            <input name="max_price" type="numeric" class="form-control" placeholder="Max Price" value="{{ request()->max_price }}"/>
         </div>
         <div class="col col-sm-2">
             <select name="order_by" class="form-select">
@@ -45,7 +68,7 @@
     </div>
 </form>
 
-
+<!-- عرض المنتجات -->
 @foreach($products as $product)
     <div class="card mt-2">
         <div class="card-body">
@@ -70,11 +93,23 @@
 					    </div>
 					</div>
 
+                    <!-- نموذج شراء المنتج -->
+                    <form action="{{ route('products.purchase', $product->id) }}" method="POST">
+    @csrf
+    <div class="row mb-2">
+        <div class="col-12">
+            <button type="submit" class="btn btn-success w-100">Buy</button>
+        </div>
+    </div>
+</form>
+
+
+                    <!-- عرض تفاصيل المنتج -->
                     <table class="table table-striped">
                         <tr><th width="20%">Name</th><td>{{$product->name}}</td></tr>
                         <tr><th>Model</th><td>{{$product->model}}</td></tr>
                         <tr><th>Code</th><td>{{$product->code}}</td></tr>
-                        <tr><th>Price</th><td>{{$product->price}}</td>
+                        <tr><th>Price</th><td>{{$product->price}}</td></tr>
                         <tr><th>Description</th><td>{{$product->description}}</td></tr>
                     </table>
                 </div>

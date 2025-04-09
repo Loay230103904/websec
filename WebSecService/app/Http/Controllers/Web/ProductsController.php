@@ -73,7 +73,7 @@ class ProductsController extends Controller {
 
 		$product->delete();
 
-		return redirect()->route('products_list');
+		return redirect()->route('products_list')->with('success', 'Delete successful.');
 	}
 
 

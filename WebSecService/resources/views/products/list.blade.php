@@ -2,12 +2,18 @@
 @section('title', 'Test Page')
 @section('content')
 
-<!-- عرض رصيد العميل -->
+<!-- عرض رصيد العميل فقط إذا كان مسجل الدخول -->
 <div class="row mt-2">
     <div class="col col-12">
-        <h4>Your Credit: <span class="badge bg-primary">{{ auth()->user()->credit }}</span></h4>
+        @if(auth()->check())
+            <h4>Your Credit: <span class="badge bg-primary">{{ auth()->user()->credit }}</span></h4>
+        @else
+            <h4 class="alert alert-warning alert-dismissible fade show" role="alert">You are not logged in.</h4>
+        @endif
     </div>
 </div>
+
+
 
 <!-- رسائل النجاح أو الفشل -->
 @if(session('success'))

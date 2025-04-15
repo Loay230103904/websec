@@ -16,7 +16,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationEmail;
+use App\Mail\TemporaryPasswordEmail;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Support\Str;
 
 
 class UsersController extends Controller {
@@ -88,6 +92,14 @@ class UsersController extends Controller {
     }
         Auth::setUser($user);
         
+        if (Hash::check($request->password, $user->password)) {
+            if (Str::length($request->password) === 5) {
+                // Assuming temp passwords are always 5 chars
+                session(['force_password_change' => true]);
+                return redirect()->route('edit_password');
+            }
+        }
+        
 
         return redirect('/');
     }
@@ -119,6 +131,34 @@ class UsersController extends Controller {
 {
     return view('users.forgot_password');
 }
+
+
+
+
+public function sendTemporaryPassword(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return back()->withErrors('Email not found.');
+    }
+
+    // Generate temp password
+    $tempPassword = Str::random(5);
+    $user->password = bcrypt($tempPassword);
+    $user->save();
+
+
+    Mail::to($user->email)->send(new TemporaryPasswordEmail($user->name, $tempPassword));
+
+
+    return redirect()->route('login')->with('message', 'Temporary password sent to your email.');
+}
+
 
 // _________________________________________________________________________________________
 

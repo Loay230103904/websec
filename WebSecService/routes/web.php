@@ -3,6 +3,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\UsersController;
+use App\Http\Controllers\SocialController;
+
 
 Route::get('register', [UsersController::class, 'register'])->name('register');
 Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
@@ -25,6 +27,9 @@ Route::get('verify', [UsersController::class, 'verify'])->name('verify');
 Route::get('/forgot-password', [UsersController::class, 'forgotPasswordForm'])->name('forgot_password');
 Route::post('/forgot-password', [UsersController::class, 'sendTemporaryPassword'])->name('forgot_password.submit');
 
+
+Route::get('/auth/redirect/{provider}', [SocialController::class, 'redirect'])->name('auth.redirect');
+Route::get('/auth/callback/{provider}', [SocialController::class, 'callback'])->name('auth.callback');
 
 
 Route::get('products', [ProductsController::class, 'list'])->name('products_list');

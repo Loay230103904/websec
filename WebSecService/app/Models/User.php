@@ -55,4 +55,10 @@ class User extends Authenticatable
     return $this->hasMany(Purchase::class);
 }
 
+public function hasPurchased($productId)
+{
+    return $this->purchases()->where('product_id', $productId)->exists();
+}
+
+
 }

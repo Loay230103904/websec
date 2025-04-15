@@ -52,11 +52,13 @@
             <input name="max_price" type="numeric" class="form-control" placeholder="Max Price" value="{{ request()->max_price }}"/>
         </div>
         <div class="col col-sm-2">
-            <select name="order_by" class="form-select">
-                <option value="" {{ request()->order_by==""?"selected":"" }} disabled>Order By</option>
-                <option value="name" {{ request()->order_by=="name"?"selected":"" }}>Name</option>
-                <option value="price" {{ request()->order_by=="price"?"selected":"" }}>Price</option>
-            </select>
+        <select name="order_by" class="form-select">
+    <option value="" {{ request()->order_by == "" ? "selected" : "" }} disabled>Order By</option>
+    <option value="name" {{ request()->order_by == "name" ? "selected" : "" }}>Name</option>
+    <option value="price" {{ request()->order_by == "price" ? "selected" : "" }}>Price</option>
+    <option value="popularity" {{ request()->order_by == "popularity" ? "selected" : "" }}>Popularity</option>
+</select>
+
         </div>
         <div class="col col-sm-2">
             <select name="order_direction" class="form-select">
@@ -84,32 +86,29 @@
                 </div>
                 <div class="col col-sm-12 col-lg-8 mt-3">
                     <div class="row mb-2">
-					    <div class="col-8">
-					        <h3>{{$product->name}}</h3>
-					    </div>
-					    <div class="col col-2">
+                        <div class="col-8">
+                            <h3>{{$product->name}}</h3>
+                        </div>
+                        <div class="col col-2">
                             @can('edit_products')
-					        <a href="{{route('products_edit', $product->id)}}" class="btn btn-success form-control">Edit</a>
+                                <a href="{{route('products_edit', $product->id)}}" class="btn btn-success form-control">Edit</a>
                             @endcan
-					    </div>
-					    <div class="col col-2">
+                        </div>
+                        <div class="col col-2">
                             @can('delete_products')
-					        <a href="{{route('products_delete', $product->id)}}" class="btn btn-danger form-control">Delete</a>
+                                <a href="{{route('products_delete', $product->id)}}" class="btn btn-danger form-control">Delete</a>
                             @endcan
-					    </div>
-					</div>
-
+                        </div>
+                    </div>
                     <!-- نموذج شراء المنتج -->
                     <form action="{{ route('products.purchase', $product->id) }}" method="POST">
-    @csrf
-    <div class="row mb-2">
-        <div class="col-12">
-            <button type="submit" class="btn btn-success w-100">Buy</button>
-        </div>
-    </div>
-</form>
-
-
+                        @csrf
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success w-100">Buy</button>
+                            </div>
+                        </div>
+                    </form>
                     <!-- عرض تفاصيل المنتج -->
                     <table class="table table-striped">
                         <tr><th width="20%">Name</th><td>{{$product->name}}</td></tr>
@@ -117,10 +116,23 @@
                         <tr><th>Code</th><td>{{$product->code}}</td></tr>
                         <tr><th>Price</th><td>{{$product->price}}</td></tr>
                         <tr><th>Description</th><td>{{$product->description}}</td></tr>
+                        <tr><th>Likes</th><td>{{$product->likes}}</td></tr>
+
                     </table>
+                    <!-- Like Button -->
+                    @if(auth()->check())
+                        @if(auth()->user()->hasPurchased($product->id))
+                            <form action="{{ route('products.like', $product->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Like</button>
+                            </form>
+                        @endif
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 @endforeach
+
+
 @endsection

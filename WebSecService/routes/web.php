@@ -26,6 +26,8 @@ Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->nam
 Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
 Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
 Route::post('/products/{productId}/purchase', [ProductsController::class, 'purchase'])->name('products.purchase');
+Route::post('/products/{product}/like', [ProductsController::class, 'like'])->name('products.like');
+
 
 
 Route::get('/', function () {

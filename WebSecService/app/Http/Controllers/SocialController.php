@@ -26,7 +26,7 @@ class SocialController extends Controller
                     'password' => bcrypt(uniqid()), // إضافة كلمة سر عشوائية
                     'social_id' => $socialUser->getId(),  // إضافة الـ social id
                     'social_type' => $provider,  // إضافة نوع الحساب (مثل google أو github)
-                    'email_verified_at' => now(), // 👈 هنا بندي التاريخ الحالي كتحقُّق للإيميل
+                    'email_verified_at' => now(), 
                     ]
                 );
         
@@ -37,11 +37,9 @@ class SocialController extends Controller
                 }
       
 
-            // تسجيل الدخول للمستخدم
             Auth::login($user);
 
-            // التوجيه إلى الصفحة المناسبة بعد تسجيل الدخول
-            return redirect('/');  // يمكنك استبدال '/' بأي صفحة تانية زي 'dashboard'
+            return redirect('/');  
 
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'حدث خطأ أثناء تسجيل الدخول: ' . $e->getMessage());

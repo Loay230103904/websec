@@ -1,6 +1,14 @@
 @extends('layouts.master')
 @section('title', 'Login')
 @section('content')
+
+
+@if(session('message'))
+    <div class="alert alert-success text-center">
+        {{ session('message') }}
+    </div>
+@endif
+
 <div class="d-flex justify-content-center">
   <div class="card m-4 col-sm-6">
     <div class="card-body">
@@ -21,6 +29,8 @@
         <label for="model" class="form-label">Password:</label>
         <input type="password" class="form-control" placeholder="password" name="password" required>
       </div>
+      <a href="{{ route('forgot_password') }}">Forgot Password?</a>
+
       <div class="form-group mb-2">
         <button type="submit" class="btn btn-primary">Login</button>
       </div>

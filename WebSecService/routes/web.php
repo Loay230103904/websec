@@ -18,6 +18,12 @@ Route::get('users/edit_password/{user?}', [UsersController::class, 'editPassword
 Route::post('users/save_password/{user}', [UsersController::class, 'savePassword'])->name('save_password');
 Route::post('user/{user}/add-credit', [UsersController::class, 'addCredit'])->name('user.addCredit');
 
+Route::get('verify', [UsersController::class, 'verify'])->name('verify');
+
+//password reset
+
+Route::get('/forgot-password', [UsersController::class, 'forgotPasswordForm'])->name('forgot_password');
+Route::post('/forgot-password', [UsersController::class, 'sendTemporaryPassword'])->name('forgot_password.submit');
 
 
 

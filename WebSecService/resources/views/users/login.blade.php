@@ -8,9 +8,12 @@
       </div>
   @endif
 
+  <style>
+    
+    </style>
 
-  <div class="d-flex justify-content-center align-items-center vh-100 bg-white">
-    <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 100%; max-width: 500px;">
+  <div class="d-flex justify-content-center align-items-center vh-50 bg-white">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 200%; max-width: 600px;">
         <div class="card-body">
             <h3 class="text-center mb-4 text-primary">Welcome Back 👋</h3>
             <form action="{{ route('do_login') }}" method="post">
@@ -60,6 +63,10 @@
                     <a href="{{ route('auth.redirect', ['provider' => 'google']) }}" class="btn btn-danger w-50 rounded-pill">
                         <i class="bi bi-google"></i> Google
                     </a>
+                    <a href="{{ route('auth.redirect', ['provider' => 'facebook']) }}" class="btn btn-primary w-50 rounded-pill">
+    <i class="bi bi-facebook"></i> Facebook
+</a>
+
                 </div>
             </form>
         </div>

@@ -66,6 +66,9 @@
                     <a href="{{ route('auth.redirect', ['provider' => 'facebook']) }}" class="btn btn-primary w-50 rounded-pill">
     <i class="bi bi-facebook"></i> Facebook
 </a>
+<a href="{{ route('auth.redirect', ['provider' => 'facebook']) }}" class="btn btn-info text-white w-50 rounded-pill">
+    <i class="bi bi-microsoft "></i> Microsift
+</a>
 
                 </div>
             </form>

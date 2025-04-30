@@ -88,7 +88,7 @@ class UsersController extends Controller {
          // ❗️Check if email is verified
         if (!$user->email_verified_at) {
         Auth::logout(); // تأمين زيادة علشان ميكملش السيشن
-        return redirect()->back()->withInput($request->input())->withErrors('Your email is not verified.');
+        return redirect()->back()->withInput($request->input())->withErrors('Your email is not verified Check Your inbox.');
     }
         Auth::setUser($user);
         

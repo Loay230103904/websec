@@ -64,5 +64,87 @@ Route::get('/test', function () {
 });
 
 
+Route::get('/cryptography', function (Request $request) {
+    $data = $request->input('data', 'Welcome to Cryptography');
+    $action = $request->input('action', 'Encrypt');
+    $result = '';
+    $status = 'Failed';
+
+    $key = 'thisisasecretkey'; // AES-128 key (16 bytes)
+    $cipher = 'aes-128-ecb';
+
+    if ($action === "Encrypt") {
+        $encrypted = openssl_encrypt($data, $cipher, $key, OPENSSL_RAW_DATA);
+        if ($encrypted !== false) {
+            $result = base64_encode($encrypted);
+            $status = 'Encrypted Successfully';
+        }
+    } elseif ($action === "Decrypt") {
+        $decoded = base64_decode($data);
+        $decrypted = openssl_decrypt($decoded, $cipher, $key, OPENSSL_RAW_DATA);
+        if ($decrypted !== false) {
+            $result = $decrypted;
+            $status = 'Decrypted Successfully';
+        }
+    } elseif ($action === "Hash") {
+        $hashed = hash('sha256', $data, true);
+        $result = base64_encode($hashed);
+        $status = 'Hashed Successfully';
+    } elseif ($action === "Sign") {
+        $path = storage_path('app/private/useremail@domain.com.pfx');
+        $password = '12345678';
+        $certificates = [];
+        $pfx = file_get_contents($path);
+
+        if (openssl_pkcs12_read($pfx, $certificates, $password)) {
+            $privateKey = $certificates['pkey'];
+            $signature = '';
+            if (openssl_sign($data, $signature, $privateKey, OPENSSL_ALGO_SHA256)) {
+                $result = base64_encode($signature);
+                $status = 'Signed Successfully';
+            }
+        }
+    } elseif ($action === "Verify") {
+        $signature = base64_decode($request->input('result'));
+        $path = storage_path('app/public/loayService.localhost.com.crt');
+        $publicKey = file_get_contents($path);
+
+        if (openssl_verify($data, $signature, $publicKey, OPENSSL_ALGO_SHA256) === 1) {
+            $status = 'Verified Successfully';
+        } else {
+            $status = 'Verification Failed';
+        }
+    } elseif ($action === "KeySend") {
+        $path = storage_path('app/public/loayService.localhost.com.crt');
+        $publicKey = file_get_contents($path);
+        $encrypted = '';
+
+        if (openssl_public_encrypt($data, $encrypted, $publicKey)) {
+            $result = base64_encode($encrypted);
+            $status = 'Key is Encrypted Successfully';
+        }
+    } elseif ($action === "KeyRecive") {
+        $path = storage_path('app/private/useremail@domain.com.pfx');
+        $password = '12345678';
+        $certificates = [];
+        $pfx = file_get_contents($path);
+
+        if (openssl_pkcs12_read($pfx, $certificates, $password)) {
+            $privateKey = $certificates['pkey'];
+            $encryptedKey = base64_decode($data);
+            $decrypted = '';
+
+            if (openssl_private_decrypt($encryptedKey, $decrypted, $privateKey)) {
+                $result = $decrypted;
+                $status = 'Key is Decrypted Successfully';
+            }
+        }
+    }
+
+    return view('cryptography', compact('data', 'result', 'action', 'status'));
+})->name('cryptography');
+
+
+
 
 

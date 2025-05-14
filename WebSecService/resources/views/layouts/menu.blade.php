@@ -13,6 +13,8 @@
             <li class="nav-item">
                 <a class="nav-link" href="./multable">Multiplication Table</a>
             </li>
+                <a class="nav-link" href="{{route('cryptography')}}">Cryptography</a>
+</li>
             <li class="nav-item">
                 <a class="nav-link" href="{{route('products_list')}}">Products</a>
             </li>

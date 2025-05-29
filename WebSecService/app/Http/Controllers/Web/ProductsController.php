@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\like;
+use App\Models\Review;
+
 
 
 
@@ -113,6 +115,45 @@ public function like(Product $product)
     $product->save();
 	return redirect()->route('products_list');
 
+}
+
+
+public function reviewForm(Product $product)
+{
+    if (!auth()->check()) {
+        return redirect()->route('login')->with('error', 'You must be logged in to leave a review.');
+    }
+
+    if (!auth()->user()->can('add_review')) {
+        abort(403, 'You do not have permission to leave a review.');
+    }
+
+    return view('products.review', compact('product'));
+}
+
+public function submitReview(Request $request, Product $product)
+{
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    if (!auth()->user()->can('add_review')) {
+        abort(403, 'You do not have permission to submit a review.');
+    }
+
+    $request->validate([
+        'review' => 'required|string|max:1000',
+        'rating' => 'nullable|integer|min:1|max:5',
+    ]);
+
+    Review::create([
+        'user_id' => auth()->id(),
+        'product_id' => $product->id,
+        'review' => $request->review,
+        'rating' => $request->rating,
+    ]);
+
+    return redirect()->route('products_list')->with('success', 'Review submitted successfully.');
 }
 
 

@@ -128,6 +128,23 @@
                             </form>
                         @endif
                     @endif
+
+@if(auth()->check() && auth()->user()->can('add_review') && auth()->user()->hasPurchased($product->id))
+    <form action="{{ route('products.review_submit', $product->id) }}" method="POST" class="mt-3">
+        @csrf
+        <div class="mb-2">
+            <label for="review">Leave a Review</label>
+            <textarea name="review" class="form-control" required></textarea>
+        </div>
+        <div class="mb-2">
+            <label for="rating">Rating (1-5)</label>
+            <input type="number" name="rating" class="form-control" min="1" max="5">
+        </div>
+        <button type="submit" class="btn btn-warning">Add Review</button>
+    </form>
+@endif
+
+
                 </div>
             </div>
         </div>

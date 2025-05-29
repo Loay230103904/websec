@@ -47,6 +47,8 @@ class UsersController extends Controller {
 	        'name' => ['required', 'string', 'min:5'],
 	        'email' => ['required', 'email', 'unique:users'],
 	        'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
+            'address' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'], 
 	    	]);
     	}
     	catch(\Exception $e) {
@@ -59,6 +61,10 @@ class UsersController extends Controller {
 	    $user->name = $request->name;
 	    $user->email = $request->email;
 	    $user->password = bcrypt($request->password); //Secure
+        $user->address = $request->address;
+        $user->phone = $request->phone;
+        $user->assignRole('customer');
+
 	    $user->save();
 
         // Send verification email
